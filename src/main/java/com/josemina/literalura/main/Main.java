@@ -7,7 +7,6 @@ import com.josemina.literalura.service.ConvertData;
 import com.josemina.literalura.service.FetchAPI;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -86,7 +85,6 @@ public class Main {
         System.out.println("Ingrese el nombre del libro que quiere buscar: ");
         String title = keyboard.nextLine();
         String json = fetchAPI.getData(URL_BASE + title.toLowerCase().replace(" ", "+"));
-        System.out.println(json);
         return convertData.getData(json, Data.class);
 
     }
@@ -95,7 +93,12 @@ public class Main {
         if (!data.results().isEmpty()){
             DataBook dataBook =  data.results().get(0);
             DataAuthor dataAuthor = dataBook.author().get(0);
-            System.out.println(dataBook);
+            System.out.println("""
+                    El libro encontrado y almacenado fue: 
+                    Nombre: %s
+                    Author: %s
+                    Idioma: %s
+                    """.formatted(dataBook.title(), dataAuthor.name(), dataBook.languages()));
             Book searchedBook = bookRepository.findByTitleContainingIgnoreCase(dataBook.title());
 
             if (searchedBook != null)System.out.println("El libro ya existe");
